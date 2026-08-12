@@ -1,53 +1,27 @@
-const API_URL = "http://localhost:5000/api/tasks";
+import apiRequest from "./api";
 
-export const getTasks = async () => {
-    const response = await fetch(API_URL);
+const TASKS_ENDPOINT = "/api/tasks";
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch tasks");
-    }
-
-    return response.json();
+export const getTasks = () => {
+    return apiRequest(TASKS_ENDPOINT);
 };
 
-export const createTask = async (task) => {
-    const response = await fetch(API_URL, {
+export const createTask = (task) => {
+    return apiRequest(TASKS_ENDPOINT, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
         body: JSON.stringify(task)
     });
-
-    if (!response.ok) {
-        throw new Error("Failed to create task");
-    }
-
-    return response.json();
 };
 
-export const updateTask = async (id, task) => {
-    const response = await fetch(`${API_URL}/${id}`, {
+export const updateTask = (id, task) => {
+    return apiRequest(`${TASKS_ENDPOINT}/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
         body: JSON.stringify(task)
     });
-
-    if (!response.ok) {
-        throw new Error("Failed to update task");
-    }
-
-    return response.json();
 };
 
-export const deleteTask = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`, {
+export const deleteTask = (id) => {
+    return apiRequest(`${TASKS_ENDPOINT}/${id}`, {
         method: "DELETE"
     });
-
-    if (!response.ok) {
-        throw new Error("Failed to delete task");
-    }
 };

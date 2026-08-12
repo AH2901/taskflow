@@ -13,20 +13,31 @@ import {
 function App() {
     const [tasks, setTasks] = useState([]);
     const [filter, setFilter] = useState("all");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         loadTasks();
     }, []);
 
-    const loadTasks = async () => {
-        try {
-            const data = await getTasks();
-            setTasks(data);
-        } catch (error) {
-            console.error("Error loading tasks:", error);
-        }
-    };
+   const loadTasks = async () => {
+    try {
+        setLoading(true);
+        setError(null);
 
+        const data = await getTasks();
+
+        setTasks(data);
+    } catch (error) {
+        console.error("Error loading tasks:", error);
+
+        setError(
+            "We couldn't load your tasks. Please try again."
+        );
+    } finally {
+        setLoading(false);
+    }
+};
     const handleTaskCreated = (newTask) => {
         setTasks((currentTasks) => [
             ...currentTasks,
@@ -57,6 +68,28 @@ function App() {
             );
         }
     };
+
+    const handleEdit = async (id, updatedData) => {
+    try {
+        const updatedTask = await updateTask(
+            id,
+            updatedData
+        );
+
+        setTasks((currentTasks) =>
+            currentTasks.map((task) =>
+                task._id === updatedTask._id
+                    ? updatedTask
+                    : task
+            )
+        );
+    } catch (error) {
+        console.error(
+            "Error editing task:",
+            error
+        );
+    }
+};
 
     const handleDelete = async (id) => {
         try {
@@ -192,12 +225,48 @@ function App() {
                 </div>
 
 
-                <TaskList
-                    tasks={tasks}
-                    filter={filter}
-                    onToggle={handleToggle}
-                    onDelete={handleDelete}
-                />
+                {loading ? (
+    <div className="loading-state">
+        <div className="loading-sticker">
+            🌸
+        </div>
+
+        <h3>
+            Loading your tasks...
+        </h3>
+
+        <p>
+            Getting everything ready for you ✨
+        </p>
+    </div>
+) : error ? (
+    <div className="error-state">
+        <div>😿</div>
+
+        <h3>
+            Oops!
+        </h3>
+
+        <p>
+            {error}
+        </p>
+
+        <button
+            className="retry-button"
+            onClick={loadTasks}
+        >
+            🔄 Try Again
+        </button>
+    </div>
+) : (
+   <TaskList
+    tasks={tasks}
+    filter={filter}
+    onToggle={handleToggle}
+    onDelete={handleDelete}
+    onEdit={handleEdit}
+/>
+)}
 
             </section>
 

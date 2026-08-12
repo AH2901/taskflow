@@ -4,7 +4,8 @@ function TaskList({
     tasks,
     filter,
     onToggle,
-    onDelete
+    onDelete,
+    onEdit
 }) {
     const filteredTasks = tasks.filter((task) => {
         if (filter === "pending") {
@@ -39,12 +40,13 @@ function TaskList({
         <div className="task-grid">
             {filteredTasks.map((task, index) => (
                 <TaskCard
-                    key={task._id}
-                    task={task}
-                    index={index}
-                    onToggle={onToggle}
-                    onDelete={onDelete}
-                />
+    key={task._id}
+    task={task}
+    index={index}
+    onToggle={onToggle}
+    onDelete={onDelete}
+    onEdit={onEdit}
+/>
             ))}
         </div>
     );

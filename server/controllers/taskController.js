@@ -16,11 +16,18 @@ const getTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
     try {
-        const { title, description } = req.body;
+        const {
+            title,
+            description,
+            priority,
+            dueDate
+        } = req.body;
 
         const task = await Task.create({
             title,
-            description
+            description,
+            priority,
+            dueDate
         });
 
         res.status(201).json(task);
